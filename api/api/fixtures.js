@@ -10,14 +10,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Only allow GET
+  // Only allow GET requests
   if (req.method !== "GET") {
     return res.status(405).json({
       error: "Method not allowed"
     });
   }
 
-  // Get API key from Vercel environment variable
+  // Get the API key from Vercel
   const API_KEY = process.env.API_FOOTBALL_KEY;
 
   if (!API_KEY) {
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // Get requested date
+  // Get date from the frontend
   const date = req.query.date;
 
   if (!date) {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // Basic date format check
+  // Check date format
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return res.status(400).json({
       error: "Invalid date format. Use YYYY-MM-DD."
@@ -47,12 +47,12 @@ export default async function handler(req, res) {
 
   try {
 
-    const url =
+    const apiUrl =
       "https://v3.football.api-sports.io/fixtures" +
       "?date=" + encodeURIComponent(date) +
       "&timezone=" + encodeURIComponent(timezone);
 
-    const response = await fetch(url, {
+    const response = await fetch(apiUrl, {
       headers: {
         "x-apisports-key": API_KEY
       }
